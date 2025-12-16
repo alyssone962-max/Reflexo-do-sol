@@ -1,18 +1,27 @@
--- [[ MAXIMIZANDO O BRILHO SOLAR PARA O REFLEXO ]] --
+-- [[ RAIOS SOLARES E BRILHO SUAVE (REFLEXO DIMINUÍDO) ]] --
 
 local Lighting = game:GetService("Lighting")
 
--- === CONFIGURAÇÕES GERAIS E HORA ===
-Lighting.Technology = Enum.Technology.Future -- Tentamos Future novamente para o melhor reflexo
+-- === CONFIGURAÇÕES GERAIS E HORA (MANTIDAS) ===
+Lighting.Technology = Enum.Technology.Future 
 Lighting.GlobalShadows = true 
 Lighting.TimeOfDay = "12:00:00" -- Meio-dia
+Lighting.Brightness = 3.0 
+Lighting.Ambient = Color3.fromRGB(50, 50, 50) 
 
--- === AUMENTANDO O BRILHO DO SOL DIRETAMENTE ===
--- Aumenta a intensidade da luz solar global. Isso força o sol a ser mais brilhante que o céu.
-Lighting.Brightness = 3.0 -- Valor alto, geralmente 2 ou 3 já é o suficiente
-Lighting.Ambient = Color3.fromRGB(50, 50, 50) -- Mantém a luz ambiente um pouco escura para que o sol se destaque
+-- === 1. EFEITO RAIOS SOLARES (SUNRAYS EFFECT) ===
 
--- === CONFIGURAÇÕES DE BRILHO/BLOOM MÁXIMO (Para capturar o reflexo) ===
+local sunRays = Lighting:FindFirstChildOfClass("SunRaysEffect")
+if not sunRays then
+    sunRays = Instance.new("SunRaysEffect")
+    sunRays.Parent = Lighting
+end
+
+-- Propriedades do SunRays: INTENSIDADE DIMINUÍDA (de 0.5 para 0.2)
+sunRays.Intensity = 0.2   
+sunRays.Spread = 1.0      
+
+-- === 2. CONFIGURAÇÕES DE BRILHO/BLOOM MÁXIMO (REFLEXO DIMINUÍDO) ===
 
 local bloom = Lighting:FindFirstChildOfClass("BloomEffect")
 if not bloom then
@@ -20,18 +29,19 @@ if not bloom then
     bloom.Parent = Lighting
 end
 
--- Propriedades do Bloom:
-bloom.Intensity = 1.0   
-bloom.Size = 70         -- Aumentamos o tamanho do halo para envolver o reflexo
-bloom.Threshold = 0.7   -- Mais reflexos entrarão na área de brilho
+-- Propriedades do Bloom: INTENSIDADE DIMINUÍDA (de 1.0 para 0.4)
+bloom.Intensity = 0.4   
+bloom.Size = 70         
+bloom.Threshold = 0.7   
 
--- 2. Reflexo na Superfície (Specular Scale)
+-- === 3. REFLEXO NA SUPERFÍCIE (Specular Scale) ===
+-- Mantemos em 1.0, mas a redução do Bloom e SunRays já diminui o reflexo percebido.
 local reflection = Lighting:FindFirstChildOfClass("EnvironmentalSpecularScale")
 if not reflection then
     reflection = Instance.new("EnvironmentalSpecularScale")
     reflection.Parent = Lighting
 end
 
-reflection.Value = 1.0 -- Reflexo ambiental máximo
+reflection.Value = 1.0 
 
-print("☀️ Reflexo Solar Otimizado: Brilho da Luz Solar Forçado para 3.0.")
+print("✨ Reflexo Solar Suavizado: Intensidade do Bloom reduzida para 0.4 e SunRays para 0.2.")
