@@ -1,1 +1,0 @@
-# Reflexo-do-sol

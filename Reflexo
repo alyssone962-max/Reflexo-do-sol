@@ -1,0 +1,37 @@
+-- [[ MAXIMIZANDO O BRILHO SOLAR PARA O REFLEXO ]] --
+
+local Lighting = game:GetService("Lighting")
+
+-- === CONFIGURAÇÕES GERAIS E HORA ===
+Lighting.Technology = Enum.Technology.Future -- Tentamos Future novamente para o melhor reflexo
+Lighting.GlobalShadows = true 
+Lighting.TimeOfDay = "12:00:00" -- Meio-dia
+
+-- === AUMENTANDO O BRILHO DO SOL DIRETAMENTE ===
+-- Aumenta a intensidade da luz solar global. Isso força o sol a ser mais brilhante que o céu.
+Lighting.Brightness = 3.0 -- Valor alto, geralmente 2 ou 3 já é o suficiente
+Lighting.Ambient = Color3.fromRGB(50, 50, 50) -- Mantém a luz ambiente um pouco escura para que o sol se destaque
+
+-- === CONFIGURAÇÕES DE BRILHO/BLOOM MÁXIMO (Para capturar o reflexo) ===
+
+local bloom = Lighting:FindFirstChildOfClass("BloomEffect")
+if not bloom then
+    bloom = Instance.new("BloomEffect")
+    bloom.Parent = Lighting
+end
+
+-- Propriedades do Bloom:
+bloom.Intensity = 1.0   
+bloom.Size = 70         -- Aumentamos o tamanho do halo para envolver o reflexo
+bloom.Threshold = 0.7   -- Mais reflexos entrarão na área de brilho
+
+-- 2. Reflexo na Superfície (Specular Scale)
+local reflection = Lighting:FindFirstChildOfClass("EnvironmentalSpecularScale")
+if not reflection then
+    reflection = Instance.new("EnvironmentalSpecularScale")
+    reflection.Parent = Lighting
+end
+
+reflection.Value = 1.0 -- Reflexo ambiental máximo
+
+print("☀️ Reflexo Solar Otimizado: Brilho da Luz Solar Forçado para 3.0.")
